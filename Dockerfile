@@ -1,5 +1,5 @@
 # Base stage with common dependencies
-FROM python:3.11-slim AS base
+FROM --platform=linux/amd64 python:3.11-slim AS base
 SHELL ["/bin/bash", "-c"]
 
 # Set environment variables to make Python print directly to the terminal and avoid .pyc files.
@@ -39,7 +39,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 WORKDIR /workspaces/serena
 
 # Development target
-FROM base AS development
+FROM --platform=linux/amd64 base AS development
 # Copy all files for development
 COPY . /workspaces/serena/
 
@@ -53,7 +53,8 @@ ENV PATH="/workspaces/serena/.venv/bin:${PATH}"
 ENTRYPOINT ["/bin/bash", "-c", "source .venv/bin/activate && $0 $@"]
 
 # Production target
-FROM base AS production
+FROM --platform=linux/amd64 base AS production
+
 # Copy only necessary files for production
 COPY pyproject.toml /workspaces/serena/
 COPY README.md /workspaces/serena/
